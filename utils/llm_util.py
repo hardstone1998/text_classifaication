@@ -22,13 +22,7 @@ client_embedding = OpenAI(
 )
 
 
-def request_llm_api(content):
-    messages = [
-        {
-            "role": "user",
-            "content": content
-        }
-    ]
+def request_llm_api(messages):
     t1 = time.time()
     completion = client_llm.chat.completions.create(model=llm_model, messages=messages)
     t2 = time.time()

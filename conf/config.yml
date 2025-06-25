@@ -1,8 +1,8 @@
 openai:
   llm:
-    url: "http://192.168.0.108:11434/v1/"
+    url: "http://192.168.0.109:11434/v1/"
     model: "qwen2.5:14b-instruct"
   embedding:
-    url: "http://192.168.0.108:11434/v1/"
+    url: "http://192.168.0.109:11434/v1/"
     model: "bge-m3:latest"
 save_models: "/media/qsl/000E281E0008CBB8/models/classification"

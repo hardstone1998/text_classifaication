@@ -6,7 +6,7 @@ from utils.load_config import load_config
 
 config = load_config()
 save_models = config.get('save_models')
-embedding_dir = "embeddings"
+embedding_dir = "embedding_dir"
 
 
 def train_and_save_model(X_train, y_train, model_name: str):

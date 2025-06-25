@@ -26,10 +26,10 @@ class MLPClassifier(nn.Module):
 
 config = load_config()
 save_models = config.get('save_models')
-embedding_dir = "embeddings"
+embedding_dir = "embedding_dir"
 
 
-def train_and_save_pytorch_model(X_train, y_train, model_name, device):
+def train_and_save_mlp_model(X_train, y_train, model_name, device):
     print("Training PyTorch MLP model...")
 
     # 数据准备
@@ -42,7 +42,7 @@ def train_and_save_pytorch_model(X_train, y_train, model_name, device):
     model = MLPClassifier(input_dim).to(device)
     optimizer = torch.optim.Adam(model.parameters(), lr=1e-3)
 
-    for epoch in range(10):
+    for epoch in range(32):
         model.train()
         total_loss = 0
         for xb, yb in dataloader:
@@ -60,3 +60,13 @@ def train_and_save_pytorch_model(X_train, y_train, model_name, device):
     torch.save(model.state_dict(), save_path)
     print(f"模型已保存到: {save_path}")
     return model
+
+
+def load_mlp_model(model_name: str, input_dim, device):
+    save_path = os.path.join(save_models, embedding_dir, f"{model_name}.pt")
+    if os.path.exists(save_path):
+        model = MLPClassifier(input_dim).to(device)
+        model.load_state_dict(torch.load(save_path, map_location=device))
+        print(f"模型已加载：{save_path}")
+        return model
+    return None
