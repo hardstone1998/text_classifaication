@@ -25,11 +25,10 @@ This project aims to explore various cutting-edge techniques and methods to perf
 The project will utilize multiple public text classification datasets covering domains such as news, reviews, and Q&A.
 
 ## Usage
-(To be supplemented based on actual project implementation, including installation, running instructions, and data preparation.)
 
 ## Contribution
 Contributions are welcome! Feel free to submit issues or pull requests to help improve the project.
 
 ---
 
-Maintained by [Your Name or Team Name].
+Maintained by QSL.
