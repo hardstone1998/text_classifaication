@@ -1,0 +1,12 @@
+CREATE TABLE `classification`.`prompt`  (
+  `id` int(0) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `content` varchar(2048) NOT NULL,
+  `score` varchar(255) NULL,
+  `father_id` int(0) UNSIGNED NULL,
+  `task_id` int(0) UNSIGNED NULL,
+  `create_time` datetime(0) NULL,
+  PRIMARY KEY (`id`)
+);
+
+ALTER TABLE `classification`.`prompt`
+MODIFY COLUMN `score` INT UNSIGNED NOT NULL COMMENT '准确率*1000';

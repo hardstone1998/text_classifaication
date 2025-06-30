@@ -5,4 +5,14 @@ openai:
   embedding:
     url: "http://192.168.0.109:11434/v1/"
     model: "bge-m3:latest"
+  online_llm: # 互联网大模型服务
+    url: "https://dashscope.aliyuncs.com/compatible-mode/v1"
+    api_key: "sk-xxxx"
+    model: "qwen-plus"
 save_models: "/media/qsl/000E281E0008CBB8/models/classification"
+mysql:
+  url: "192.168.0.109"
+  port: "3306"
+  username: "root"
+  password: "123456"
+  database: "classification"
