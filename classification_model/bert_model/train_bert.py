@@ -1,22 +1,36 @@
 import os
-
-import torch
-from torch.utils.data import DataLoader
-from transformers import BertTokenizer, BertForSequenceClassification, AdamW
-
+from transformers import BertTokenizer, BertForSequenceClassification
+from torch.optim import AdamW
 from transformers import get_scheduler
 from tqdm import tqdm
-
+from datasets import load_dataset
 from utils.load_config import load_config
+from torch.utils.data import DataLoader
 
 base_model_name = "bert-base-chinese"
 config = load_config()
 save_models = config.get('save_models')
 bert_dir = "bert_dir"
+tokenizer = BertTokenizer.from_pretrained(base_model_name)
+
+
+def encode_bert_tensor(dataset_name):
+    dataset = load_dataset(dataset_name)
+
+    def tokenize_function(example):
+        return tokenizer(example["text"], padding="max_length", truncation=True, max_length=128)
+
+    # 分词 + 数据集准备
+    tokenized_ds = dataset.map(tokenize_function, batched=True)
+    tokenized_ds.set_format(type="torch", columns=["input_ids", "attention_mask", "label"])
+    # 构建 DataLoader
+    train_loader = DataLoader(tokenized_ds["train"], batch_size=16, shuffle=True)
+    test_loader = DataLoader(tokenized_ds["test"], batch_size=16)
+    return train_loader, test_loader
 
 
 def train_and_save_bert_model(train_loader, model_name, device):
-    tokenizer = BertTokenizer.from_pretrained(base_model_name)
+    # tokenizer = BertTokenizer.from_pretrained(base_model_name)
     model = BertForSequenceClassification.from_pretrained(base_model_name, num_labels=2).to(device)
 
     # 优化器 & 学习率调度器
@@ -58,24 +72,18 @@ def train_and_save_bert_model(train_loader, model_name, device):
 
     print(f"模型和分词器已保存到: {model_save_path}")
 
-    return tokenizer, model
+    return model
 
 
 def load_bert_model(model_name, device):
     save_bert_full_dir = os.path.join(save_models, "embedding_dir")
-    os.makedirs(save_bert_full_dir, exist_ok=True)
-    model_save_path = os.path.join(save_bert_full_dir, "bert", model_name)
-    os.makedirs(model_save_path, exist_ok=True)
-    # 拼接保存路径
     model_path = os.path.join(save_bert_full_dir, "bert", model_name)
 
-    # 判断路径是否存在
-    if not os.path.exists(model_path, device):
-        return None, None
+    # 如果路径不存在，直接返回 None（不要先创建）
+    if not os.path.exists(os.path.join(model_path, "pytorch_model.bin")):
+        return None
 
-    # 加载 tokenizer 和 model
-    tokenizer = BertTokenizer.from_pretrained(model_path)
+    # 加载模型
     model = BertForSequenceClassification.from_pretrained(model_path).to(device)
-
-    print(f"模型和分词器已从 {model_path} 加载成功")
-    return tokenizer, model
+    print(f"模型已从 {model_path} 加载成功")
+    return model

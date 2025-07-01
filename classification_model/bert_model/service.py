@@ -1,31 +1,21 @@
 import logging
 import torch
-from datasets import load_dataset
+
 from sklearn.metrics import accuracy_score
-from torch.utils.data import DataLoader
-from classification_model.bert_model.train_bert import load_bert_model, train_and_save_bert_model
+
+from classification_model.bert_model.train_bert import load_bert_model, train_and_save_bert_model, encode_bert_tensor
 
 
 def bert_C_MTEB_OnlineShopping_classification():
+    # Test Accuracy: 0.9400
     dataset_name = "C-MTEB/OnlineShopping-classification"
     model_name = "bert_OnlineShopping_classification"
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     logging.info(f"Using device: {device}")
+    train_loader, test_loader = encode_bert_tensor(dataset_name)
 
-    dataset = load_dataset(dataset_name)
-
-    def tokenize_function(example):
-        return tokenizer(example["text"], padding="max_length", truncation=True, max_length=128)
-
-    # 分词 + 数据集准备
-    tokenized_ds = dataset.map(tokenize_function, batched=True)
-    tokenized_ds.set_format(type="torch", columns=["input_ids", "attention_mask", "label"])
-    # 构建 DataLoader
-    train_loader = DataLoader(tokenized_ds["train"], batch_size=16, shuffle=True)
-    test_loader = DataLoader(tokenized_ds["test"], batch_size=16)
-
-    tokenizer, model = load_bert_model(model_name, device)
+    model = load_bert_model(model_name, device)
 
     if model is None:
         model = train_and_save_bert_model(train_loader, model_name, device)
