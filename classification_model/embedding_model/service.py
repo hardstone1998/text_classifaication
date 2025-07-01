@@ -10,7 +10,7 @@ from sklearn.metrics import accuracy_score
 from utils.llm_util import request_embedding_api
 
 
-def embedding_svm_sentiment_classification():
+def embedding_svm_C_MTEB_OnlineShopping_classification():
     # 数据质量较差 准确率Accuracy: 0.7993333333333333
     # X_train_text, y_train, X_test_text, y_test = Liuyu_sentiment_classification()
     # model_name = "svm_sentiment_classification"
@@ -33,7 +33,7 @@ def embedding_svm_sentiment_classification():
     print("Accuracy:", accuracy_score(y_test, y_pred))
 
 
-def embedding_mlp_sentiment_classification():
+def embedding_mlp_C_MTEB_OnlineShopping_classification():
     # X_train_text, y_train, X_test_text, y_test = Liuyu_sentiment_classification()
     # model_name = "mlp_sentiment_classification"
 
